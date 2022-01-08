@@ -105,7 +105,15 @@ export default class Formatter {
   }
 
   formatLineComment(token, query) {
-    return this.addNewline(query + this.show(token));
+    // add comment indent
+    if(token.type ===tokenTypes.LINE_COMMENT  && token.whitespaceBefore.match(/\n/)){
+      value = '\n'+value;   
+      query = query.replace(/\s+$/g,"");
+      var value = this.indentation.getIndent() +this.show(token);
+      return this.addNewline(query + '\n'+value);
+    }else{
+      return this.addNewline(query + this.show(token));
+    }
   }
 
   formatBlockComment(token, query) {
@@ -218,6 +226,8 @@ export default class Formatter {
 
   // Converts token to string (uppercasing it if needed)
   show({ type, value }) {
+    
+
     if (
       this.cfg.uppercase &&
       (type === tokenTypes.RESERVED ||

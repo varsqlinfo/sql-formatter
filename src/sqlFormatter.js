@@ -50,3 +50,39 @@ export const format = (query, cfg = {}) => {
 };
 
 export const supportedDialects = Object.keys(formatters);
+
+/**
+ * Check Support language
+ *
+ *  @param {String} language Query language
+ * @return {Boolean}
+ */
+export const isSupportDialects = (language) =>{
+  if (language === undefined) {
+    throw Error(`Unsupported SQL dialect: ${language}`);
+  }
+
+  language == language.toLowerCase();
+
+  for(var key in formatters){
+    if(key == language){
+      return true; 
+    }
+  }
+  return false; 
+}
+
+export const getTokens = (query, cfg = {}) => {
+  if (typeof query !== 'string') {
+    throw new Error('Invalid query argument. Extected string, instead got ' + typeof query);
+  }
+
+  let Formatter = StandardSqlFormatter;
+  if (cfg.language !== undefined) {
+    Formatter = formatters[cfg.language];
+  }
+  if (Formatter === undefined) {
+    throw Error(`Unsupported SQL dialect: ${cfg.language}`);
+  }
+  return new Formatter(cfg).tokenizer().tokenize(query);
+};

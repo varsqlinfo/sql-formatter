@@ -1,6 +1,6 @@
 import tokenTypes from './tokenTypes';
 import * as regexFactory from './regexFactory';
-import { escapeRegExp } from '../utils';
+import { escapeRegExp,objectMerge } from '../utils';
 
 export default class Tokenizer {
   /**
@@ -19,6 +19,16 @@ export default class Tokenizer {
    *  @param {String[]} [cfg.operator] Additional operators to recognize
    */
   constructor(cfg) {
+
+    cfg = objectMerge({
+      stringTypes: [`""`, "''","mybatis"],
+      openParens: ['(', 'CASE'],
+      closeParens: [')', 'END'],
+      indexedPlaceholderTypes: ['?'],
+      namedPlaceholderTypes: [],
+      lineCommentTypes: ['--'],
+    } , cfg);
+
     this.WHITESPACE_REGEX = /^(\s+)/u;
     this.NUMBER_REGEX = /^((-\s*)?[0-9]+(\.[0-9]+)?([eE]-?[0-9]+(\.[0-9]+)?)?|0x[0-9a-fA-F]+|0b[01]+)\b/u;
 

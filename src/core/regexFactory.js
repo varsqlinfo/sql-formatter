@@ -44,6 +44,7 @@ export function createStringRegex(stringTypes) {
 // 6. Unicode single-quoted string using \' to escape
 // 7. Unicode double-quoted string using \" to escape
 // 8. PostgreSQL dollar-quoted strings
+// 9. mybatis parameter string
 export function createStringPattern(stringTypes) {
   const patterns = {
     '``': '((`[^`]*($|`))+)',
@@ -55,6 +56,7 @@ export function createStringPattern(stringTypes) {
     "U&''": "((U&'[^'\\\\]*(?:\\\\.[^'\\\\]*)*('|$))+)",
     'U&""': '((U&"[^"\\\\]*(?:\\\\.[^"\\\\]*)*("|$))+)',
     $$: '((?<tag>\\$\\w*\\$)[\\s\\S]*?(?:\\k<tag>|$))',
+    'mybatis': '[#|$]\\{.+?\\}',  // add mybatis parameter 
   };
 
   return stringTypes.map((t) => patterns[t]).join('|');
